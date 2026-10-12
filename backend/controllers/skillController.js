@@ -1,0 +1,6 @@
+const Skill = require('../models/Skill');
+exports.getSkills = async (req, res, next) => { try { const filter = {}; if (req.query.department) filter.department = req.query.department; if (req.query.category) filter.category = req.query.category; if (req.query.level) filter.level = req.query.level; res.json(await Skill.find(filter).sort({ createdAt: -1 })); } catch (e) { next(e); } };
+exports.getSkill = async (req, res, next) => { try { const item = await Skill.findById(req.params.id); if (!item) return res.status(404).json({ message: 'Skill not found.' }); res.json(item); } catch (e) { next(e); } };
+exports.createSkill = async (req, res, next) => { try { const item = await Skill.create(req.body); res.status(201).json(item); } catch (e) { next(e); } };
+exports.updateSkill = async (req, res, next) => { try { const item = await Skill.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); if (!item) return res.status(404).json({ message: 'Skill not found.' }); res.json(item); } catch (e) { next(e); } };
+exports.deleteSkill = async (req, res, next) => { try { const item = await Skill.findByIdAndDelete(req.params.id); if (!item) return res.status(404).json({ message: 'Skill not found.' }); res.json({ message: 'Skill deleted.' }); } catch (e) { next(e); } };

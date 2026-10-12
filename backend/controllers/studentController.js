@@ -1,0 +1,6 @@
+const Student = require('../models/Student');
+exports.getStudents = async (req, res, next) => { try { res.json(await Student.find().sort({ name: 1 })); } catch (e) { next(e); } };
+exports.getStudent = async (req, res, next) => { try { const item = await Student.findById(req.params.id); if (!item) return res.status(404).json({ message: 'Student not found.' }); res.json(item); } catch (e) { next(e); } };
+exports.createStudent = async (req, res, next) => { try { const item = await Student.create(req.body); res.status(201).json(item); } catch (e) { if (e.code === 11000) return res.status(409).json({ message: 'That college email is already registered.' }); next(e); } };
+exports.updateStudent = async (req, res, next) => { try { const item = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); if (!item) return res.status(404).json({ message: 'Student not found.' }); res.json(item); } catch (e) { next(e); } };
+exports.deleteStudent = async (req, res, next) => { try { const item = await Student.findByIdAndDelete(req.params.id); if (!item) return res.status(404).json({ message: 'Student not found.' }); res.json({ message: 'Student deleted.' }); } catch (e) { next(e); } };
